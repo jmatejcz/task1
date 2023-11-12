@@ -1,9 +1,10 @@
-from project import db , app
+from project import db, app
+import re
 
 
 # Loan model
 class Loan(db.Model):
-    __tablename__ = 'Loans'
+    __tablename__ = "Loans"
 
     id = db.Column(db.Integer, primary_key=True)
     customer_name = db.Column(db.String(64), nullable=False)
@@ -14,7 +15,22 @@ class Loan(db.Model):
     original_year_published = db.Column(db.Integer, nullable=False)
     original_book_type = db.Column(db.String(64), nullable=False)
 
-    def __init__(self, customer_name, book_name, loan_date, return_date, original_author, original_year_published, original_book_type):
+    def __init__(
+        self,
+        customer_name,
+        book_name,
+        loan_date,
+        return_date,
+        original_author,
+        original_year_published,
+        original_book_type,
+    ):
+        if not re.match("^[a-zA-Z]{1,12}$", customer_name):
+            raise ValueError("Name must contain only letters and the max length is 12.")
+        if not re.match("^[a-zA-Z ]{1,20}$", book_name):
+            raise ValueError(
+                "Book name must contain only letters and the max length is 20."
+            )
         self.customer_name = customer_name
         self.book_name = book_name
         self.loan_date = loan_date
